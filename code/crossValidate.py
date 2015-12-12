@@ -32,7 +32,7 @@ def readData():
     f.close()
     
 def splitData():
-    index = int(0.8 * len(sentences))
+    index = int(0.98 * len(sentences))
     
     training =   sentences[:index]
     testing =   sentences[index:]

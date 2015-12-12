@@ -2,9 +2,50 @@ import os
 import pickle
 import numpy as np
 import math
-
+import re
 
 tags = ['B','I','O']            
+
+all_num=r'^[0-9]+$'
+all_caps=r'^[A-Z]+$'
+punct=r'^[^a-zA-Z0-9]+$'
+nums_caps=r'^[0-9]+[A-Z]+$'
+caps_nums=r'^[A-Z]+[0-9]+$'
+nums_smalls=r'^[0-9]+[a-z]+$'
+small_nums=r'^[a-z]+[0-9]+$'
+small_caps=r'^[a-z][A-Z]+$'
+pattern_1=r'^[A-Z].*[0-9]$'
+pattern_2=r'^[a-z].*[0-9]$'
+pattern_3=r'^.*[A-Z]+$'
+#pattern_4=r'^[A-Z]+.*[A-Z]+$'
+#capssmall=r'^[a-zA-Z]+$'
+#aplhanumeic=r'^[a-A-Z0-9]+$'
+
+def featureEngineering(word):
+    if re.search(all_num,word):
+        return 'allnum'
+    if re.search(all_caps,word):
+        return 'allcaps'
+    if re.search(punct,word):
+        return 'punct'
+    if re.search(nums_caps,word):
+        return 'nums_caps'
+    if re.search(caps_nums,word):
+        return 'caps_nums'
+    if re.search(nums_smalls,word):
+        return 'nums_smalls'
+    if re.search(small_nums,word):
+        return 'small_nums'
+    if re.search(small_caps,word):
+        return 'small_caps'
+    if re.search(pattern_1,word):
+        return 'pattern_1'        
+    if re.search(pattern_2,word):
+        return 'pattern_2'    
+    if re.search(pattern_3,word):
+        return 'pattern_3'
+        
+    return '_rare_'
 
 def loadPickle(name):
     fileObject = open(name,'r')  
@@ -12,6 +53,7 @@ def loadPickle(name):
     return b
 
 def tag(test):
+    
     tagged_sent = []
     output = ''
     
@@ -24,7 +66,7 @@ def tag(test):
             word = each_word.split()[0]
             orig_sent.append(word)
             if word.lower() not in vocab:
-                word="_rare_"
+                word=featureEngineering(word)
             parsed_sent.append(word)
         
         #tagged_sent.append(viterbi(parsed_sent))
@@ -39,6 +81,8 @@ def tag(test):
     f.write(output)
     f.flush()
     f.close()        
+    
+    
 def viterbi(sentence):
     
     #print sentence
@@ -130,6 +174,7 @@ def handleAny(word,cur_tag,tags,prob_matrix ):
             best_tag = prev_tag
     
     return (max_prob,best_tag)    
+
 counts = loadPickle('../data/counts.pkl')
 transition_count = loadPickle('../data/trans.pkl')
 emis_count = loadPickle('../data/emiss.pkl')

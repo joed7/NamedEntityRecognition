@@ -20,6 +20,7 @@ from operator import itemgetter, attrgetter
 import os
 import pickle
 from _collections import defaultdict
+import re
 
 data = '../data/train.txt'
 
@@ -30,7 +31,46 @@ vocab=defaultdict(int)
 
 wc = defaultdict(int)
 
-threshold = 5
+threshold = 4
+
+all_num=r'^[0-9]+$'
+all_caps=r'^[A-Z]+$'
+punct=r'^[^a-zA-Z0-9]+$'
+nums_caps=r'^[0-9]+[A-Z]+$'
+caps_nums=r'^[A-Z]+[0-9]+$'
+nums_smalls=r'^[0-9]+[a-z]+$'
+small_nums=r'^[a-z]+[0-9]+$'
+small_caps=r'^[a-z][A-Z]+$'
+pattern_1=r'^[A-Z].*[0-9]$'
+pattern_2=r'^[a-z].*[0-9]$'
+pattern_3=r'^.*[A-Z]+$'
+#capssmall=r'^[a-zA-Z]+$'
+#aplhanumeic=r'^[a-A-Z0-9]+$'
+
+def featureEngineering(word):
+    if re.search(all_num,word):
+        return 'allnum'
+    if re.search(all_caps,word):
+        return 'allcaps'
+    if re.search(punct,word):
+        return 'punct'
+    if re.search(nums_caps,word):
+        return 'nums_caps'
+    if re.search(caps_nums,word):
+        return 'caps_nums'
+    if re.search(nums_smalls,word):
+        return 'nums_smalls'
+    if re.search(small_nums,word):
+        return 'small_nums'
+    if re.search(small_caps,word):
+        return 'small_caps'
+    if re.search(pattern_1,word):
+        return 'pattern_1'        
+    if re.search(pattern_2,word):
+        return 'pattern_2'    
+    if re.search(pattern_3,word):
+        return 'pattern_3'
+    return '_rare_'
 
 def filter_rare_words():
     f = open(data)
@@ -44,9 +84,23 @@ def filter_rare_words():
         wc[text] = wc[text] +1        
     rare_words={}
     
+    f = open(data)
+    
+    for i in f.readlines():
+        i=i.strip()
+        if len(i) == 0:
+            continue
+        (text,tag) = i.split()
+        ltext = text.lower()
+        
+        if wc[ltext] < threshold:
+            rare_words[text]=1
+        
+    '''    
     for (k,v) in wc.items():
-        if v < 5:
+        if v < threshold:
             rare_words[k]=1
+    '''            
     return rare_words        
     f.close()
     
@@ -62,11 +116,12 @@ def readData(rare_words):
             continue
 
         (text,tag) = i.split()
-        text = text.lower()
+        
         
         if text in rare_words:
-            text = "_rare_"
+            text = featureEngineering(text)
         else:
+            text = text.lower()
             vocab[text]=1
                 
         word_seq = (text,tag) 
