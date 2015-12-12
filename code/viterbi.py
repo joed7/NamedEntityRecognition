@@ -17,9 +17,10 @@ small_caps=r'^[a-z][A-Z]+$'
 pattern_1=r'^[A-Z].*[0-9]$'
 pattern_2=r'^[a-z].*[0-9]$'
 pattern_3=r'^.*[A-Z]+$'
-#pattern_4=r'^[A-Z]+.*[A-Z]+$'
-#capssmall=r'^[a-zA-Z]+$'
-#aplhanumeic=r'^[a-A-Z0-9]+$'
+
+pattern_4=r'^[A-Z]+.*[A-Z]+$'
+aplha=r'^[a-zA-Z]+$'
+aphanumeic=r'^[a-zA-Z0-9]+$'
 
 def featureEngineering(word):
     if re.search(all_num,word):
@@ -42,9 +43,15 @@ def featureEngineering(word):
         return 'pattern_1'        
     if re.search(pattern_2,word):
         return 'pattern_2'    
+    #if re.search(pattern_4,word):
+       # return 'pattern_4'
     if re.search(pattern_3,word):
         return 'pattern_3'
-        
+    #if re.search(aplha,word):
+        #return 'aplha'
+    #if re.search(aphanumeic,word):
+        #return 'aphanumeic'
+
     return '_rare_'
 
 def loadPickle(name):
