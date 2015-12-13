@@ -46,8 +46,9 @@ pattern_2=r'^[a-z].*[0-9]$'
 pattern_3=r'^.*[A-Z]+$'
 
 pattern_4=r'^[A-Z]+.*[A-Z]+$'
-aplha=r'^[a-zA-Z]+$'
+aplha=r'^[a-z]+[A-Z]+[a-z]+$'
 aphanumeic=r'^[a-zA-Z]+[0-9]+[a-zA-Z]+$'
+capssmall=r'^[A-Z]{2,}[a-z]+$'
 
 def featureEngineering(word):
     if re.search(all_num,word):
@@ -74,10 +75,12 @@ def featureEngineering(word):
         #return 'pattern_4'
     if re.search(pattern_3,word):
         return 'pattern_3'
-    #if re.search(aplha,word):
-        #return 'aplha'
+    if re.search(aplha,word):
+        return 'aplha'
     if re.search(aphanumeic,word):
         return 'aphanumeic'
+    #if re.search(capssmall,word):
+        #return 'capssmall'
 
     return '_rare_'
 

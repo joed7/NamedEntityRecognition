@@ -2,6 +2,7 @@ from operator import itemgetter, attrgetter
 import os
 import pickle
 from _collections import defaultdict
+import random
 
 data = '../data/gene.train.txt'
 
@@ -32,7 +33,9 @@ def readData():
     f.close()
     
 def splitData():
-    index = int(0.98 * len(sentences))
+    index = int(0.80 * len(sentences))
+    
+    #random.shuffle(sentences)
     
     training =   sentences[:index]
     testing =   sentences[index:]
